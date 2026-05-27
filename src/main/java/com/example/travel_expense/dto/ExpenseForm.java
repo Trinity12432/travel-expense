@@ -13,20 +13,34 @@ public class ExpenseForm {
     private Long   id;
     private String title;
     private int    amount;
+    private String currency;
+    private double exchangeRate;
+    private int amountInKrw;
     private String category;
     private String country;
     private String expenseDate;
     private String memo;
 
     // DTO → Entity 변환
+    // ✅ 수정 — toEntity() 에 환율 관련 필드 추가
+    //          amountInKrw는 amount * exchangeRate 로 자동 계산
     public Expense toEntity() {
-        return new Expense(id, title, amount, category, country, expenseDate, memo);
-    }
+        // KRW면 환율 1.0으로 그대로, 외화면 환율 적용해서 원화 계산
+        int krw = currency.equals("KRW")
+                ? amount
+                : (int)(amount * exchangeRate);
 
+        return new Expense(id, title, amount, currency,
+                exchangeRate, krw, category,
+                country, expenseDate, memo);
+    }
     // Getter / Setter (폼 바인딩 필수)
     public Long   getId()          { return id; }
     public String getTitle()       { return title; }
     public int    getAmount()      { return amount; }
+    public String getCurrency()      { return currency; }
+    public double getExchangeRate()  { return exchangeRate; }
+    public int    getAmountInKrw()   { return amountInKrw; }
     public String getCategory()    { return category; }
     public String getCountry()     { return country; }
     public String getExpenseDate() { return expenseDate; }
@@ -35,6 +49,9 @@ public class ExpenseForm {
     public void setId(Long id)                   { this.id = id; }
     public void setTitle(String title)           { this.title = title; }
     public void setAmount(int amount)            { this.amount = amount; }
+    public void setCurrency(String currency)       { this.currency = currency; }
+    public void setExchangeRate(double exchangeRate){ this.exchangeRate = exchangeRate; }
+    public void setAmountInKrw(int amountInKrw)    { this.amountInKrw = amountInKrw; }
     public void setCategory(String category)     { this.category = category; }
     public void setCountry(String country)       { this.country = country; }
     public void setExpenseDate(String expenseDate){ this.expenseDate = expenseDate; }
@@ -42,6 +59,7 @@ public class ExpenseForm {
 
     @Override
     public String toString() {
-        return "ExpenseForm{title=" + title + ", amount=" + amount + "}";
+        return "ExpenseForm{title=" + title + ", amount=" + amount +
+                ", currency=" + currency + ", amountInKrw=" + amountInKrw + "}";
     }
 }

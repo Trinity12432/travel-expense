@@ -32,6 +32,15 @@ public class Expense {
     @Column(nullable = false)
     private int amount;         // 금액 (원)
 
+    @Column(length = 10)
+    private String currency;    // 통화 종류 (KRW/USD/JPY/EUR)
+
+    @Column
+    private double exchangeRate;    // 환율 (예: 1USD = 1350.0원)
+
+    @Column
+    private int amountInKrw;    // 원화 환산 금액 (amount * exchangeRate 자동 계산)
+
     @Column(length = 20)
     private String category;    // 교통/숙박/식비/관광/기타
 
@@ -48,11 +57,15 @@ public class Expense {
     protected Expense() {}
 
     // 폼 데이터 → 엔티티 변환용 생성자
-    public Expense(Long id, String title, int amount, String category,
+    public Expense(Long id, String title, int amount, String currency,
+                   double exchangeRate, int amountInKrw, String category,
                    String country, String expenseDate, String memo) {
         this.id          = id;
         this.title       = title;
         this.amount      = amount;
+        this.currency      = currency;
+        this.exchangeRate  = exchangeRate;
+        this.amountInKrw   = amountInKrw;
         this.category    = category;
         this.country     = country;
         this.expenseDate = expenseDate;
@@ -63,6 +76,9 @@ public class Expense {
     public Long   getId()          { return id; }
     public String getTitle()       { return title; }
     public int    getAmount()      { return amount; }
+    public String getCurrency()      { return currency; }
+    public double getExchangeRate()  { return exchangeRate; }
+    public int    getAmountInKrw()   { return amountInKrw; }
     public String getCategory()    { return category; }
     public String getCountry()     { return country; }
     public String getExpenseDate() { return expenseDate; }
@@ -72,6 +88,9 @@ public class Expense {
     public void patch(Expense target) {
         if (target.title       != null) this.title       = target.title;
         if (target.amount      != 0)    this.amount      = target.amount;
+        if (target.currency     != null) this.currency     = target.currency;
+        if (target.exchangeRate != 0)    this.exchangeRate = target.exchangeRate;
+        if (target.amountInKrw  != 0)    this.amountInKrw  = target.amountInKrw;
         if (target.category    != null) this.category    = target.category;
         if (target.country     != null) this.country     = target.country;
         if (target.expenseDate != null) this.expenseDate = target.expenseDate;
@@ -81,6 +100,7 @@ public class Expense {
     @Override
     public String toString() {
         return "Expense{id=" + id + ", title=" + title +
-                ", amount=" + amount + "}";
+                ", amount=" + amount + currency=" + currency +
+        ", amountInKrw=" + amountInKrw + "}";
     }
 }
