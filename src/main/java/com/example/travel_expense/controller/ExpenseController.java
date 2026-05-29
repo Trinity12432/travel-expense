@@ -56,6 +56,27 @@ public class ExpenseController {
     public String index(Model model) {
         List<Expense> expenseList = expenseRepository.findAll();
         model.addAttribute("expenseList", expenseList);
+
+        // 카테고리별 통계 계산
+        long total = expenseList.stream()
+                .mapToLong(Expense::getAmountInKrw).sum();
+
+        Map<String, Long> sumByCategory = expenseList.stream()
+                .collect(Collectors.groupingBy(
+                    Expense::getCategory,
+                    Collectors.summingLong(Expense::getAmountInKrw)
+                ));
+
+        List<Map<String, Object>> categoryStats = new ArrayList<>();
+        sumByCategory.forEach((cat, sum) -> {
+            Map<String, Object> row = new HashMap<>();
+            row.put("category", cat);
+            row.put("totalKrw", sum);
+            row.put("ratio", total > 0 ? Math.round(sum * 100.0 / total) : 0);
+            categoryStats.add(row);
+        });
+
+        model.addAttribute("categoryStats", categoryStats);
         return "expenses/index";
     }
 
@@ -109,3 +130,6 @@ public class ExpenseController {
         return "redirect:/expenses";
     }
 }
+
+import java.util.*;
+import java.util.stream.Collectors;

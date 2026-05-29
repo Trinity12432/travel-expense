@@ -1,0 +1,23 @@
+<html>
+<body>
+
+<div>
+  <h2>경비 상세</h2>
+  <ul>
+    <li>항목: {{title}}</li>
+    <li>날짜: {{expenseDate}}</li>
+    <li>국가: {{country}}</li>
+    <li>카테고리: {{category}}</li>
+    <li>금액: {{amount}} {{currency}}</li>
+    <li>환율: 1{{currency}} = {{exchangeRate}}원</li>
+    <li>원화 환산: {{amountInKrw}}원</li>
+    <li>메모: {{memo}}</li>
+  </ul>
+
+  <a href="/expenses">목록으로</a>
+  <a href="/expenses/{{id}}/edit">수정</a>
+  <a href="/expenses/{{id}}/delete">삭제</a>
+</div>
+
+</body>
+</html>
