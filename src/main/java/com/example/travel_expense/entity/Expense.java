@@ -100,7 +100,7 @@ public class Expense {
     @Override
     public String toString() {
         return "Expense{id=" + id + ", title=" + title +
-                ", amount=" + amount + currency=" + currency +
+                ", amount=" + amount +",currency=" + currency +
         ", amountInKrw=" + amountInKrw + "}";
     }
 }

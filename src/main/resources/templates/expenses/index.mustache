@@ -1,0 +1,44 @@
+<html>
+<body>
+
+<div>
+  <h2>여행 경비 목록</h2>
+  <a href="/expenses/new">+ 경비 추가</a>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>날짜</th>
+        <th>국가</th>
+        <th>항목</th>
+        <th>카테고리</th>
+        <th>금액</th>
+        <th>통화</th>
+        <th>원화 환산</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#expenseList}}
+      <tr>
+        <td>{{expenseDate}}</td>
+        <td>{{country}}</td>
+        <td><a href="/expenses/{{id}}">{{title}}</a></td>
+        <td>{{category}}</td>
+        <td>{{amount}}</td>
+        <td>{{currency}}</td>
+        <td>{{amountInKrw}}원</td>
+      </tr>
+      {{/expenseList}}
+    </tbody>
+  </table>
+
+  <hr>
+  <h4>카테고리별 지출 통계</h4>
+  {{#categoryStats}}
+  <p>{{category}} : {{totalKrw}}원 ({{ratio}}%)</p>
+  {{/categoryStats}}
+
+</div>
+
+</body>
+</html>
