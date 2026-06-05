@@ -44,9 +44,12 @@ public class ExpenseController {
     @PostMapping("/expenses")
     public String create(ExpenseForm form) {
         System.out.println("지출 등록: " + form);
+
         Expense saved = expenseRepository.save(form.toEntity());
+
         return "redirect:/expenses/" + saved.getId();
     }
+
 
 
     // ──────────────────────────────────────────────────────

@@ -1,0 +1,47 @@
+{{>layouts/header}}
+
+<div class="container mt-4">
+    <h2>지출 등록</h2>
+
+    <form action="/expenses" method="post">
+
+        <!-- 항목명 -->
+        <input class="form-control mb-2" name="title" placeholder="항목명">
+
+        <!-- 금액 -->
+        <input class="form-control mb-2" name="amount" placeholder="금액">
+
+        <!-- 통화 -->
+        <select class="form-control mb-2" name="currency">
+            <option value="KRW">KRW</option>
+            <option value="USD">USD</option>
+            <option value="JPY">JPY</option>
+            <option value="EUR">EUR</option>
+        </select>
+
+        <!-- 환율 -->
+        <input class="form-control mb-2" name="exchangeRate" placeholder="환율 (예: 1350)">
+
+        <!-- 카테고리 -->
+        <select class="form-control mb-2" name="category">
+            {{#categories}}
+                <option value="{{.}}">{{.}}</option>
+            {{/categories}}
+        </select>
+
+        <!-- 국가 -->
+        <input class="form-control mb-2" name="country" placeholder="국가">
+
+        <!-- 날짜 -->
+        <input class="form-control mb-2" type="date" name="expenseDate">
+
+        <!-- 메모 -->
+        <textarea class="form-control mb-2" name="memo" placeholder="메모"></textarea>
+
+        <!-- 버튼 -->
+        <button class="btn btn-primary">저장</button>
+
+    </form>
+</div>
+
+{{>layouts/footer}}
