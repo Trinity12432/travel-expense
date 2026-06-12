@@ -1,49 +1,75 @@
-<html>
-<body>
+{{> layouts/header}}
 
-<div class="container mt-4">
-    <h2>지출 등록</h2>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold m-0">📝 새 지출 등록</h2>
+            <a href="/expenses" class="btn btn-outline-secondary btn-sm">목록으로</a>
+        </div>
 
-    <form action="/expenses" method="post">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 bg-light bg-opacity-50">
+                <form action="/expenses" method="post">
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-2 mb-md-0">
+                            <label for="expenseDate" class="form-label fw-semibold text-secondary">결제 날짜</label>
+                            <input type="date" class="form-control bg-white" id="expenseDate" name="expenseDate" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="country" class="form-label fw-semibold text-secondary">여행 국가</label>
+                            <input type="text" class="form-control bg-white" id="country" name="country" placeholder="예: 일본, 미국" required>
+                        </div>
+                    </div>
 
-        <!-- 항목명 -->
-        <input class="form-control mb-2" name="title" placeholder="항목명">
+                    <div class="row mb-3">
+                        <div class="col-md-8 mb-2 mb-md-0">
+                            <label for="title" class="form-label fw-semibold text-secondary">지출 항목명</label>
+                            <input type="text" class="form-control bg-white" id="title" name="title" placeholder="예: 비행기표, 라멘, 호텔" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="category" class="form-label fw-semibold text-secondary">카테고리</label>
+                            <select class="form-select bg-white" id="category" name="category">
+                                {{#categories}}
+                                    <option value="{{.}}">{{.}}</option>
+                                {{/categories}}
+                            </select>
+                        </div>
+                    </div>
 
-        <!-- 금액 -->
-        <input class="form-control mb-2" name="amount" placeholder="금액">
+                    <div class="row mb-3">
+                        <div class="col-md-5 mb-2 mb-md-0">
+                            <label for="amount" class="form-label fw-semibold text-secondary">현지 금액</label>
+                            <input type="number" step="0.01" class="form-control bg-white" id="amount" name="amount" placeholder="금액 입력" required>
+                        </div>
+                        <div class="col-md-3 mb-2 mb-md-0">
+                            <label for="currency" class="form-label fw-semibold text-secondary">통화</label>
+                            <select class="form-select bg-white" id="currency" name="currency">
+                                <option value="KRW">KRW</option>
+                                <option value="USD">USD</option>
+                                <option value="JPY">JPY</option>
+                                <option value="EUR">EUR</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exchangeRate" class="form-label fw-semibold text-secondary">적용 환율</label>
+                            <input type="number" step="0.01" class="form-control bg-white" id="exchangeRate" name="exchangeRate" placeholder="예: 1350">
+                        </div>
+                    </div>
 
-        <!-- 통화 -->
-        <select class="form-control mb-2" name="currency">
-            <option value="KRW">KRW</option>
-            <option value="USD">USD</option>
-            <option value="JPY">JPY</option>
-            <option value="EUR">EUR</option>
-        </select>
+                    <div class="mb-4">
+                        <label for="memo" class="form-label fw-semibold text-secondary">메모 (선택)</label>
+                        <textarea class="form-control bg-white" id="memo" name="memo" rows="3" placeholder="추가적인 내용을 적어주세요."></textarea>
+                    </div>
 
-        <!-- 환율 -->
-        <input class="form-control mb-2" name="exchangeRate" placeholder="환율 (예: 1350)">
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">저장하기</button>
+                    </div>
 
-        <!-- 카테고리 -->
-        <select class="form-control mb-2" name="category">
-            {{#categories}}
-                <option value="{{.}}">{{.}}</option>
-            {{/categories}}
-        </select>
-
-        <!-- 국가 -->
-        <input class="form-control mb-2" name="country" placeholder="국가">
-
-        <!-- 날짜 -->
-        <input class="form-control mb-2" type="date" name="expenseDate">
-
-        <!-- 메모 -->
-        <textarea class="form-control mb-2" name="memo" placeholder="메모"></textarea>
-
-        <!-- 버튼 -->
-        <button class="btn btn-primary">저장</button>
-
-    </form>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
-</body>
-</html>
+{{> layouts/footer}}
