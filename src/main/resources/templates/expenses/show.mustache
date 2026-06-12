@@ -1,23 +1,84 @@
-<html>
-<body>
+{{> layouts/header}}
 
-<div>
-  <h2>경비 상세</h2>
-  <ul>
-    <li>항목: {{title}}</li>
-    <li>날짜: {{expenseDate}}</li>
-    <li>국가: {{country}}</li>
-    <li>카테고리: {{category}}</li>
-    <li>금액: {{amount}} {{currency}}</li>
-    <li>환율: 1{{currency}} = {{exchangeRate}}원</li>
-    <li>원화 환산: {{amountInKrw}}원</li>
-    <li>메모: {{memo}}</li>
-  </ul>
+<div class="row justify-content-center mt-3">
+    <div class="col-md-8 col-lg-6">
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold m-0">📄 지출 상세 내역</h3>
+            <span class="badge bg-secondary fs-6">{{category}}</span>
+        </div>
 
-  <a href="/expenses">목록으로</a>
-  <a href="/expenses/{{id}}/edit">수정</a>
-  <a href="/expenses/{{id}}/delete">삭제</a>
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 class="m-0 fw-bold">{{title}}</h4>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <span class="text-muted fw-semibold">결제 날짜</span>
+                        <span>{{expenseDate}}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <span class="text-muted fw-semibold">여행 국가</span>
+                        <span>{{country}}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <span class="text-muted fw-semibold">현지 금액</span>
+                        <span class="fw-bold fs-5">
+                            {{amount}} <span class="badge badge-currency px-2 py-1 fs-6 ms-1">{{currency}}</span>
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <span class="text-muted fw-semibold">적용 환율</span>
+                        <span>1 {{currency}} = <span class="fw-semibold">{{exchangeRate}}</span> 원</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3 bg-light-subtle">
+                        <span class="fw-bold text-dark">원화 환산 금액</span>
+                        <span class="fs-4 fw-bold text-primary">{{amountInKrw}} 원</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card-body border-top">
+                <h6 class="text-muted fw-semibold mb-2">메모</h6>
+                <div class="p-3 bg-light rounded text-dark" style="min-height: 80px;">
+                    {{memo}}
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mb-5">
+            <a href="/expenses" class="btn btn-outline-secondary fw-bold px-4">
+                목록으로
+            </a>
+            <div>
+                <a href="/expenses/{{id}}/edit" class="btn btn-success fw-bold px-4 me-2">
+                    수정
+                </a>
+                <a href="/expenses/{{id}}/delete" class="btn btn-danger fw-bold px-4" onclick="return confirm('이 지출 내역을 정말 삭제하시겠습니까?');">
+                    삭제
+                </a>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-</body>
-</html>
+<script>
+    document.querySelectorAll('.badge-currency').forEach(badge => {
+        const currency = badge.textContent.trim().toUpperCase();
+        if (currency === 'KRW') {
+            badge.classList.add('bg-primary', 'text-white');
+        } else if (currency === 'USD') {
+            badge.classList.add('bg-success', 'text-white');
+        } else if (currency === 'JPY') {
+            badge.classList.add('bg-danger', 'text-white');
+        } else if (currency === 'EUR') {
+            badge.classList.add('bg-warning', 'text-dark');
+        } else {
+            badge.classList.add('bg-dark', 'text-white');
+        }
+    });
+</script>
+
+{{> layouts/footer}}
