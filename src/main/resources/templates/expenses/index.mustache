@@ -1,44 +1,111 @@
-<html>
-<body>
+{{> layouts/header}}
 
-<div>
-  <h2>여행 경비 목록</h2>
-  <a href="/expenses/new">+ 경비 추가</a>
-
-  <table border="1">
-    <thead>
-      <tr>
-        <th>날짜</th>
-        <th>국가</th>
-        <th>항목</th>
-        <th>카테고리</th>
-        <th>금액</th>
-        <th>통화</th>
-        <th>원화 환산</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#expenseList}}
-      <tr>
-        <td>{{expenseDate}}</td>
-        <td>{{country}}</td>
-        <td><a href="/expenses/{{id}}">{{title}}</a></td>
-        <td>{{category}}</td>
-        <td>{{amount}}</td>
-        <td>{{currency}}</td>
-        <td>{{amountInKrw}}원</td>
-      </tr>
-      {{/expenseList}}
-    </tbody>
-  </table>
-
-  <hr>
-  <h4>카테고리별 지출 통계</h4>
-  {{#categoryStats}}
-  <p>{{category}} : {{totalKrw}}원 ({{ratio}}%)</p>
-  {{/categoryStats}}
-
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold m-0">✈️ 여행 경비 목록</h2>
+    <a href="/expenses/new" class="btn btn-primary shadow-sm fw-bold">
+        <i class="bi bi-plus-lg"></i> + 경비 추가
+    </a>
 </div>
 
-</body>
-</html>
+<div class="card shadow-sm mb-5">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-secondary text-uppercase fs-7 text-center">
+                    <tr>
+                        <th style="width: 15%">날짜</th>
+                        <th style="width: 12%">국가</th>
+                        <th style="width: 25%">항목</th>
+                        <th style="width: 13%">카테고리</th>
+                        <th style="width: 15%">금액</th>
+                        <th style="width: 10%">통화</th>
+                        <th style="width: 15%">원화 환산</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    {{#expenseList}}
+                    <tr>
+                        <td class="text-muted">{{expenseDate}}</td>
+                        <td><span class="badge bg-light text-dark border">{{country}}</span></td>
+                        <td class="text-start fw-bold">
+                            <a href="/expenses/{{id}}" class="text-decoration-none text-dark link-primary">{{title}}</a>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary text-white">{{category}}</span>
+                        </td>
+                        <td class="text-end pe-3 fw-semibold">{{amount}}</td>
+                        <td>
+                            <span class="badge badge-currency px-2 py-1">{{currency}}</span>
+                        </td>
+                        <td class="text-end pe-3 text-primary fw-bold">{{amountInKrw}}원</td>
+                    </tr>
+                    {{/expenseList}}
+                    
+                    {{^expenseList}}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            등록된 지출 내역이 없습니다. 첫 지출을 기록해 보세요!
+                        </td>
+                    </tr>
+                    {{/expenseList}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold">📊 카테고리별 지출 통계</h5>
+    </div>
+    <div class="card-body py-4">
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {{#categoryStats}}
+            <div class="col">
+                <div class="p-3 border rounded bg-light-subtle">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold fs-6 text-dark">{{category}}</span>
+                        <span class="text-muted small">
+                            <span class="fw-bold text-primary">{{totalKrw}}원</span> ({{ratio}}%)
+                        </span>
+                    </div>
+                    <div class="progress" style="height: 12px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+                             role="progressbar" 
+                             style="width: {{ratio}}%;" 
+                             aria-valuenow="{{ratio}}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/categoryStats}}
+            
+            {{^categoryStats}}
+            <div class="col-12 text-center text-muted py-3">
+                통계 데이터가 없습니다.
+            </div>
+            {{/categoryStats}}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.badge-currency').forEach(badge => {
+        const currency = badge.textContent.trim().toUpperCase();
+        if (currency === 'KRW') {
+            badge.classList.add('bg-primary', 'text-white'); // 파랑
+        } else if (currency === 'USD') {
+            badge.classList.add('bg-success', 'text-white'); // 초록
+        } else if (currency === 'JPY') {
+            badge.classList.add('bg-danger', 'text-white');  // 빨강
+        } else if (currency === 'EUR') {
+            badge.classList.add('bg-warning', 'text-dark');  // 노랑
+        } else {
+            badge.classList.add('bg-dark', 'text-white');
+        }
+    });
+</script>
+
+{{> layouts/footer}}
