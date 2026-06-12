@@ -1,115 +1,104 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>지출 수정</title>
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body>
+{{> layouts/header}}
 
-<div class="container mt-4" style="max-width: 600px;">
-
-    <h2 class="mb-4">✏️ 지출 수정</h2>
-
-    <!--
-        POST /expenses/{id}/update 로 폼 데이터 전송
-        D파트 핵심: 수정 후 DB 갱신 → 상세 페이지로 리다이렉트
-    -->
-    <form action="/expenses/{{expense.id}}/update" method="post">
-
-        <!-- 숨김 필드: id 전달 (ExpenseForm.id 바인딩) -->
-        <input type="hidden" name="id" value="{{expense.id}}">
-
-        <!-- 항목명 -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">항목명 <span class="text-danger">*</span></label>
-            <input type="text" name="title" class="form-control"
-                   value="{{expense.title}}" required>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold m-0">✏️ 지출 수정</h2>
+            <a href="/expenses/{{expense.id}}" class="btn btn-outline-secondary btn-sm">상세로 돌아가기</a>
         </div>
 
-        <!-- 카테고리 -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">카테고리</label>
-            <select name="category" class="form-select">
-                {{#categories}}
-                <option value="{{.}}"
-                    {{#expense.category}}{{/expense.category}}>{{.}}</option>
-                {{/categories}}
-            </select>
-        </div>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 bg-light bg-opacity-50">
+                <form action="/expenses/{{expense.id}}/update" method="post">
+                    
+                    <input type="hidden" name="id" value="{{expense.id}}">
 
-        <!-- 여행 국가 -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">여행 국가</label>
-            <input type="text" name="country" class="form-control"
-                   value="{{expense.country}}">
-        </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-2 mb-md-0">
+                            <label class="form-label fw-semibold text-secondary">지출 날짜</label>
+                            <input type="date" name="expenseDate" class="form-control bg-white" value="{{expense.expenseDate}}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-secondary">여행 국가</label>
+                            <input type="text" name="country" class="form-control bg-white" value="{{expense.country}}">
+                        </div>
+                    </div>
 
-        <!-- 날짜 -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">지출 날짜</label>
-            <input type="text" name="expenseDate" class="form-control"
-                   placeholder="예: 2024-06-01" value="{{expense.expenseDate}}">
-        </div>
+                    <div class="row mb-3">
+                        <div class="col-md-8 mb-2 mb-md-0">
+                            <label class="form-label fw-semibold text-secondary">항목명 <span class="text-danger">*</span></label>
+                            <input type="text" name="title" class="form-control bg-white" value="{{expense.title}}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-secondary">카테고리</label>
+                            <select name="category" class="form-select bg-white" id="categorySelect" data-selected="{{expense.category}}">
+                                {{#categories}}
+                                    <option value="{{.}}">{{.}}</option>
+                                {{/categories}}
+                            </select>
+                        </div>
+                    </div>
 
-        <!-- 통화 선택 (NEW) -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">통화</label>
-            <select name="currency" class="form-select" id="currencySelect"
-                    onchange="toggleExchangeRate()">
-                <option value="KRW" {{#expense.currency}}{{/expense.currency}}>KRW (원)</option>
-                <option value="USD">USD (달러)</option>
-                <option value="JPY">JPY (엔)</option>
-                <option value="EUR">EUR (유로)</option>
-            </select>
-        </div>
+                    <div class="row mb-3">
+                        <div class="col-md-5 mb-2 mb-md-0">
+                            <label class="form-label fw-semibold text-secondary">금액 <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" name="amount" class="form-control bg-white" value="{{expense.amount}}" required min="0">
+                        </div>
+                        <div class="col-md-3 mb-2 mb-md-0">
+                            <label class="form-label fw-semibold text-secondary">통화</label>
+                            <select name="currency" class="form-select bg-white" id="currencySelect" onchange="toggleExchangeRate()" data-selected="{{expense.currency}}">
+                                <option value="KRW">KRW</option>
+                                <option value="USD">USD</option>
+                                <option value="JPY">JPY</option>
+                                <option value="EUR">EUR</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4" id="exchangeRateArea">
+                            <label class="form-label fw-semibold text-secondary">환율</label>
+                            <input type="number" step="0.01" name="exchangeRate" class="form-control bg-white" value="{{expense.exchangeRate}}" min="0">
+                        </div>
+                    </div>
 
-        <!-- 금액 -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">금액 <span class="text-danger">*</span></label>
-            <input type="number" name="amount" class="form-control"
-                   value="{{expense.amount}}" required min="0">
-        </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-secondary">메모</label>
+                        <textarea name="memo" class="form-control bg-white" rows="3">{{expense.memo}}</textarea>
+                    </div>
 
-        <!-- 환율 (NEW) - KRW 선택 시 숨김 -->
-        <div class="mb-3" id="exchangeRateArea">
-            <label class="form-label fw-bold">환율 (1 외화 = ? 원)</label>
-            <input type="number" name="exchangeRate" class="form-control"
-                   value="{{expense.exchangeRate}}" step="0.01" min="0"
-                   placeholder="예: 1350.00 (1USD = 1350원)">
-            <div class="form-text text-muted">
-                ※ 수정 저장 시 원화 환산 금액이 자동 재계산됩니다.
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-warning btn-lg fw-bold shadow-sm">💾 수정 저장</button>
+                    </div>
+
+                </form>
             </div>
         </div>
 
-        <!-- 메모 -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">메모</label>
-            <textarea name="memo" class="form-control" rows="3">{{expense.memo}}</textarea>
-        </div>
-
-        <!-- 버튼 -->
-        <div class="d-flex gap-2 mt-4">
-            <button type="submit" class="btn btn-warning">💾 수정 저장</button>
-            <a href="/expenses/{{expense.id}}" class="btn btn-secondary">취소</a>
-        </div>
-
-    </form>
+    </div>
 </div>
 
 <script>
-    // 통화가 KRW면 환율 입력란 숨기기
+    // 1. 기존 데이터에 맞춰 select 박스(카테고리, 통화) 기본값 세팅
+    document.addEventListener("DOMContentLoaded", function() {
+        let categorySelect = document.getElementById('categorySelect');
+        let currencySelect = document.getElementById('currencySelect');
+        
+        categorySelect.value = categorySelect.getAttribute('data-selected');
+        currencySelect.value = currencySelect.getAttribute('data-selected');
+        
+        // 페이지 로딩 시 환율 입력창 숨김/표시 초기화
+        toggleExchangeRate();
+    });
+
+    // 2. 통화가 KRW면 환율 입력란 숨기기 (팀원 D 작성 코드 유지)
     function toggleExchangeRate() {
         var currency = document.getElementById('currencySelect').value;
         var area = document.getElementById('exchangeRateArea');
-        area.style.display = (currency === 'KRW') ? 'none' : 'block';
+        if (currency === 'KRW') {
+            area.style.display = 'none';
+        } else {
+            area.style.display = 'block';
+        }
     }
-    // 페이지 로드 시 현재 통화에 맞게 초기화
-    toggleExchangeRate();
 </script>
 
-</body>
-</html>
-
+{{> layouts/footer}}
