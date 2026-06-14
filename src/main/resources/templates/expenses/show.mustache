@@ -1,6 +1,6 @@
 {{> layouts/header}}
 
-<div class="row justify-content-center mt-3">
+{{#expense}} <div class="row justify-content-center mt-3">
     <div class="col-md-8 col-lg-6">
         
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -63,8 +63,7 @@
 
     </div>
 </div>
-
-<script>
+{{/expense}} <script>
     document.querySelectorAll('.badge-currency').forEach(badge => {
         const currency = badge.textContent.trim().toUpperCase();
         if (currency === 'KRW') {
