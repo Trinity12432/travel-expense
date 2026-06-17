@@ -30,7 +30,7 @@ public class Expense {
     private String title;       // 지출 항목명
 
     @Column(nullable = false)
-    private int amount;         // 금액 (원)
+    private double amount;         // 금액 (원)
 
     @Column(length = 10)
     private String currency;    // 통화 종류 (KRW/USD/JPY/EUR)
@@ -39,7 +39,7 @@ public class Expense {
     private double exchangeRate;    // 환율 (예: 1USD = 1350.0원)
 
     @Column
-    private int amountInKrw;    // 원화 환산 금액 (amount * exchangeRate 자동 계산)
+    private double amountInKrw;    // 원화 환산 금액 (amount * exchangeRate 자동 계산)
 
     @Column(length = 20)
     private String category;    // 교통/숙박/식비/관광/기타
@@ -57,8 +57,8 @@ public class Expense {
     protected Expense() {}
 
     // 폼 데이터 → 엔티티 변환용 생성자
-    public Expense(Long id, String title, int amount, String currency,
-                   double exchangeRate, int amountInKrw, String category,
+    public Expense(Long id, String title, double amount, String currency,
+                   double exchangeRate, double amountInKrw, String category,
                    String country, String expenseDate, String memo) {
         this.id          = id;
         this.title       = title;
@@ -75,14 +75,20 @@ public class Expense {
     // Getter
     public Long   getId()          { return id; }
     public String getTitle()       { return title; }
-    public int    getAmount()      { return amount; }
+    public double getAmount()      { return amount; }
     public String getCurrency()      { return currency; }
     public double getExchangeRate()  { return exchangeRate; }
-    public int    getAmountInKrw()   { return amountInKrw; }
+    public double getAmountInKrw()   { return amountInKrw; }
     public String getCategory()    { return category; }
     public String getCountry()     { return country; }
     public String getExpenseDate() { return expenseDate; }
     public String getMemo()        { return memo; }
+
+    // 화면 표시용: 원화 환산 금액을 반올림한 정수(long)로 반환
+    // double을 그대로 출력하면 큰 숫자에서 1.5E8 같은 지수 표기가 나오기 때문에 사용
+    public long getKrwRounded() {
+        return Math.round(amountInKrw);
+    }
 
     // Update 시 변경된 필드만 덮어쓰는 메서드
     public void patch(Expense target) {

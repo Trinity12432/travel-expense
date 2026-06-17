@@ -12,10 +12,10 @@ public class ExpenseForm {
 
     private Long   id;
     private String title;
-    private int    amount;
+    private double    amount;
     private String currency;
     private double exchangeRate;
-    private int amountInKrw;
+    private double amountInKrw;
     private String category;
     private String country;
     private String expenseDate;
@@ -26,9 +26,9 @@ public class ExpenseForm {
     //          amountInKrw는 amount * exchangeRate 로 자동 계산
     public Expense toEntity() {
         // KRW면 환율 1.0으로 그대로, 외화면 환율 적용해서 원화 계산
-        int krw = currency.equals("KRW")
+        double krw = currency.equals("KRW")
                 ? amount
-                : (int)(amount * exchangeRate);
+                : (double)(amount * exchangeRate);
 
         return new Expense(id, title, amount, currency,
                 exchangeRate, krw, category,
@@ -37,10 +37,10 @@ public class ExpenseForm {
     // Getter / Setter (폼 바인딩 필수)
     public Long   getId()          { return id; }
     public String getTitle()       { return title; }
-    public int    getAmount()      { return amount; }
+    public double getAmount()      { return amount; }
     public String getCurrency()      { return currency; }
     public double getExchangeRate()  { return exchangeRate; }
-    public int    getAmountInKrw()   { return amountInKrw; }
+    public double getAmountInKrw()   { return amountInKrw; }
     public String getCategory()    { return category; }
     public String getCountry()     { return country; }
     public String getExpenseDate() { return expenseDate; }
@@ -48,10 +48,10 @@ public class ExpenseForm {
 
     public void setId(Long id)                   { this.id = id; }
     public void setTitle(String title)           { this.title = title; }
-    public void setAmount(int amount)            { this.amount = amount; }
+    public void setAmount(double amount)            { this.amount = amount; }
     public void setCurrency(String currency)       { this.currency = currency; }
     public void setExchangeRate(double exchangeRate){ this.exchangeRate = exchangeRate; }
-    public void setAmountInKrw(int amountInKrw)    { this.amountInKrw = amountInKrw; }
+    public void setAmountInKrw(double amountInKrw)    { this.amountInKrw = amountInKrw; }
     public void setCategory(String category)     { this.category = category; }
     public void setCountry(String country)       { this.country = country; }
     public void setExpenseDate(String expenseDate){ this.expenseDate = expenseDate; }

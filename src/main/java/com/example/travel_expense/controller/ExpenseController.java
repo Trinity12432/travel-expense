@@ -62,20 +62,21 @@ public class ExpenseController {
         model.addAttribute("expenseList", expenseList);
 
         // 카테고리별 통계 계산
-        long total = expenseList.stream()
-                .mapToLong(Expense::getAmountInKrw).sum();
+        double total = expenseList.stream()
+                .mapToDouble(Expense::getAmountInKrw).sum();
 
-        Map<String, Long> sumByCategory = expenseList.stream()
+        Map<String, Double> sumByCategory = expenseList.stream()
                 .collect(Collectors.groupingBy(
                     Expense::getCategory,
-                    Collectors.summingLong(Expense::getAmountInKrw)
+                    Collectors.summingDouble(Expense::getAmountInKrw)
                 ));
+                
 
         List<Map<String, Object>> categoryStats = new ArrayList<>();
         sumByCategory.forEach((cat, sum) -> {
             Map<String, Object> row = new HashMap<>();
             row.put("category", cat);
-            row.put("totalKrw", sum);
+            row.put("totalKrw", Math.round(sum));
             row.put("ratio", total > 0 ? Math.round(sum * 100.0 / total) : 0);
             categoryStats.add(row);
         });
@@ -90,7 +91,11 @@ public class ExpenseController {
     @GetMapping("/expenses/{id}")
     public String show(@PathVariable Long id, Model model) {
         Expense expense = expenseRepository.findById(id).orElse(null);
+
+        long krwRounded = Math.round(expense.getAmountInKrw());
+
         model.addAttribute("expense", expense);
+        model.addAttribute("krwRounded", krwRounded);
         return "expenses/show";
     }
 
