@@ -24,7 +24,7 @@
                 </thead>
                 <tbody class="text-center">
                     {{#expenseList}}
-                    <tr>
+                    <tr onclick="location.href='/expenses/{{id}}'" style="cursor:pointer;">
                         <td class="text-muted">{{expenseDate}}</td>
                         <td><span class="badge bg-light text-dark border">{{country}}</span></td>
                         <td class="text-start fw-bold">

@@ -10,7 +10,7 @@
         <div class="card shadow-sm border-0">
             <div class="card-body p-4 bg-light bg-opacity-50">
                 <form action="/expenses" method="post">
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-6 mb-2 mb-md-0">
                             <label for="expenseDate" class="form-label fw-semibold text-secondary">결제 날짜</label>
@@ -71,5 +71,43 @@
         </div>
     </div>
 </div>
+
+<script>
+// 환율 조회 함수
+function fetchRate(currency) {
+    const rateInput = document.getElementById('exchangeRate');
+
+    if (currency === 'KRW') {
+        rateInput.value = 1;
+        return;
+    }
+
+    rateInput.value = '조회 중...';
+    rateInput.disabled = true;
+
+    // 직접 API 호출 대신 우리 서버 통해서 호출
+    fetch('/api/exchange-rate?currency=' + currency)
+        .then(function(res) { return res.json(); })
+        .then(function(rate) {
+            rateInput.value = rate.toFixed(2);
+            rateInput.disabled = false;
+        })
+        .catch(function(err) {
+            rateInput.value = 1;
+            rateInput.disabled = false;
+        });
+}
+
+// 페이지 로드 시
+window.addEventListener('load', function() {
+    const currency = document.getElementById('currency').value;
+    fetchRate(currency);
+});
+
+// 통화 변경 시
+document.getElementById('currency').addEventListener('change', function() {
+    fetchRate(this.value);
+});
+</script>
 
 {{> layouts/footer}}

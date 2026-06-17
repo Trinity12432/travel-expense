@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -131,5 +132,29 @@ public class ExpenseController {
     public String delete(@PathVariable Long id) {
         expenseRepository.deleteById(id);
         return "redirect:/expenses";
+    }
+
+    // 환율 조회 엔드포인트
+    @GetMapping("/api/exchange-rate")
+    @ResponseBody
+    public double getExchangeRate(@RequestParam String currency) {
+        if (currency.equals("KRW")) return 1.0;
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "https://api.frankfurter.app/latest?from="
+                    + currency + "&to=KRW";
+            Map response = restTemplate.getForObject(url, Map.class);
+            Map rates = (Map) response.get("rates");
+            return ((Number) rates.get("KRW")).doubleValue();
+        } catch (Exception e) {
+            // 실패 시 기본값
+            return switch (currency) {
+                case "USD" -> 1508.0;
+                case "JPY" -> 9.4;
+                case "EUR" -> 1680.0;
+                default -> 1.0;
+            };
+        }
     }
 }
